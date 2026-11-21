@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import uuid
@@ -41,6 +42,8 @@ class JobCreateResponse(BaseModel):
 
 
 def read_job(job_id: str) -> dict[str, Any]:
+    if not re.fullmatch(r"[a-f0-9]{32}", job_id):
+        raise HTTPException(status_code=404, detail="Reconstruction job not found.")
     folder = DATA_DIR / job_id
     metadata = folder / "job.json"
     if not metadata.exists():
@@ -148,6 +151,7 @@ def get_job(job_id: str) -> dict[str, Any]:
 
 @app.get("/api/jobs/{job_id}/frames/{frame_name}")
 def get_frame(job_id: str, frame_name: str) -> FileResponse:
+    read_job(job_id)
     if Path(frame_name).name != frame_name or not frame_name.endswith(".jpg"):
         raise HTTPException(status_code=400, detail="Invalid frame name.")
     path = DATA_DIR / job_id / "frames" / frame_name
