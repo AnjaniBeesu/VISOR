@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="VISOR transforms ordinary video into explorable 3D environments." />
+    <title>VISOR — See space differently</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="VISOR home"><span class="brand-mark">V<span>/</span></span><span class="brand-name">VISOR</span></a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#process">PROCESS</a>
+          <a href="#about">ABOUT</a>
+          <a class="nav-cta" href="https://github.com/AnjaniBeesu/VISOR" target="_blank" rel="noreferrer">GITHUB <span>↗</span></a>
+        </nav>
+        <button class="menu-button" aria-label="Open menu"><span></span><span></span></button>
+      </header>
+
+      <main>
+        <section class="hero" id="about">
+          <div class="hero-kicker"><span class="live-dot"></span> SPATIAL RECONSTRUCTION / 001</div>
+          <div class="hero-title-wrap">
+            <h1>SEE SPACE<br><span>DIFFERENTLY.</span></h1>
+            <p class="hero-copy">From a simple video to a space you can step inside.<br>Exploring the world, one frame at a time.</p>
+          </div>
+
+          <div class="demo-heading">
+            <div><span class="eyebrow">01 / THE TRANSFORMATION</span><h2>One space. <em>Many dimensions.</em></h2></div>
+            <div class="demo-note">DRAG TO EXPLORE <span>↓</span></div>
+          </div>
+
+          <div class="experience-shell">
+            <div class="scene-topline"><span>INPUT_001.MP4</span><span class="scene-status"><i></i><b id="statusText">SOURCE FOOTAGE</b></span><span>00:00:08 / 00:00:12</span></div>
+            <div class="scene" id="scene">
+              <div class="scene-photo" id="scenePhoto"></div>
+              <div class="scene-vignette"></div>
+              <div class="scanline"></div>
+              <svg class="point-layer" id="pointLayer" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+              <svg class="wire-layer" id="wireLayer" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <g class="wireframe">
+                  <path d="M285 440 L480 310 L820 310 L1010 430 L810 550 L470 550 Z M285 440 L285 260 L480 135 L820 135 L1010 250 L1010 430 M480 310 L480 135 M820 310 L820 135 M285 260 L625 260 L1010 250 M470 550 L470 370 L625 260 L810 370 L810 550 M470 370 L810 370 M625 260 L625 470 M285 440 L470 370 M1010 430 L810 370" />
+                  <path d="M480 135 L625 45 L1010 250 M625 45 L625 260 M625 45 L820 135 M285 260 L480 310 M820 310 L1010 250" />
+                  <path d="M350 405 L350 300 L430 245 L430 355 Z M865 390 L865 285 L940 330 L940 435 Z M530 490 L530 390 L590 350 L590 450 Z M690 450 L690 350 L755 390 L755 490 Z" />
+                </g>
+              </svg>
+              <div class="model-layer" id="modelLayer" aria-hidden="true">
+                <svg class="architecture-model" viewBox="0 0 900 560" role="img" aria-label="Isometric architectural reconstruction model">
+                  <defs>
+                    <linearGradient id="topFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9e1f5"/><stop offset="1" stop-color="#7489bd"/></linearGradient>
+                    <linearGradient id="sideFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b6f9f"/><stop offset="1" stop-color="#26385f"/></linearGradient>
+                    <linearGradient id="frontFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#91a4ce"/><stop offset="1" stop-color="#40557f"/></linearGradient>
+                  </defs>
+                  <g class="model-geometry">
+                    <path class="base" d="M105 370 L445 175 L795 365 L450 555 Z"/>
+                    <path class="wall wall-left" d="M180 345 L180 190 L445 40 L445 200 Z"/>
+                    <path class="wall wall-right" d="M445 200 L445 40 L720 190 L720 350 Z"/>
+                    <path class="roof" d="M180 190 L445 35 L720 190 L445 345 Z"/>
+                    <path class="wall wall-back" d="M445 200 L720 350 L720 420 L445 270 Z"/>
+                    <path class="wall wall-side" d="M180 345 L445 495 L445 270 L180 120 Z"/>
+                    <path class="floor" d="M180 345 L445 495 L720 340 L445 190 Z"/>
+                    <path class="partition" d="M445 200 L445 495 M445 270 L575 345 L575 420 M310 270 L445 345 L575 270"/>
+                    <path class="window" d="M245 205 L245 275 L320 318 L320 248 Z M510 105 L510 178 L580 218 L580 145 Z M610 250 L610 320 L675 357 L675 287 Z"/>
+                    <path class="detail" d="M180 190 L445 345 L720 190 M180 345 L445 200 L720 350 M310 270 L310 430 M575 270 L575 420"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="scene-coordinates"><span id="coordText">FRAME 024 · RGB</span><span> X 04.82 / Y 12.09 / Z 02.40</span></div>
+              <div class="scene-corner">VISOR <span>LABS</span></div>
+            </div>
+            <div class="slider-panel">
+              <div class="slider-meta"><span>RECONSTRUCTION STAGE</span><span id="stageCount">01 — 04</span></div>
+              <div class="range-wrap">
+                <div class="range-track"><div class="range-fill" id="rangeFill"></div></div>
+                <input id="progressSlider" type="range" min="0" max="100" value="0" aria-label="Explore reconstruction stages" />
+                <div class="range-ticks"><span class="active" data-tick="0">VIDEO</span><span data-tick="1">POINTS</span><span data-tick="2">WIREFRAME</span><span data-tick="3">3D MODEL</span></div>
+              </div>
+              <div class="stage-description"><span class="stage-index" id="stageIndex">01</span><p id="stageDescription">Original footage — the captured environment, just as it was recorded.</p><button id="resetButton" type="button">RESET ↺</button></div>
+            </div>
+          </div>
+          <div class="under-demo"><span>FIG 01. — FROM PIXELS TO SPATIAL STRUCTURE</span><span>MOVE THE SLIDER TO REVEAL THE PROCESS <b>↗</b></span></div>
+        </section>
+
+        <section class="process-section" id="process">
+          <div class="section-index">02 / THE IDEA</div>
+          <div class="process-grid">
+            <h2>Not just a<br>recording. A <span>place.</span></h2>
+            <div class="process-copy"><p>VISOR is an exploration into visual intelligence and spatial reconstruction. We are building a pipeline that turns ordinary video into a navigable digital representation of the real world.</p><a href="https://github.com/AnjaniBeesu/VISOR" target="_blank" rel="noreferrer">FOLLOW THE BUILD <span>↗</span></a></div>
+          </div>
+          <div class="steps">
+            <article><span>01</span><div class="step-line"></div><h3>CAPTURE</h3><p>Start with an everyday video of a real environment.</p></article>
+            <article><span>02</span><div class="step-line"></div><h3>RECONSTRUCT</h3><p>Extract visual features, depth and spatial structure.</p></article>
+            <article><span>03</span><div class="step-line"></div><h3>EXPLORE</h3><p>Reveal an interactive 3D representation of the space.</p></article>
+          </div>
+        </section>
+      </main>
+      <footer><a class="brand" href="#"><span class="brand-mark">V<span>/</span></span><span class="brand-name">VISOR</span></a><span>AN EXPERIMENT IN SPATIAL UNDERSTANDING.</span><span>© 2026 VISOR PROJECT</span></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
