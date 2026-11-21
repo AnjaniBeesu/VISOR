@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: visor-reconstruction-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - key: VISOR_DATA_DIR
+        value: /data/jobs
+      - key: VISOR_WORKERS
+        value: "1"
+    disk:
+      name: visor-job-storage
+      mountPath: /data/jobs
+      sizeGB: 20
