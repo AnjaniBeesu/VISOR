@@ -111,12 +111,12 @@ def run_reconstruction(job_id: str, video: Path, folder: Path, writer: Callable)
         update(job_id, folder, writer, progress=28, stage="Detecting visual features",
                message="Finding and describing visual features in each frame.")
         run(["colmap", "feature_extractor", "--database_path", str(database), "--image_path", str(frames_dir),
-             "--ImageReader.single_camera", "1", "--SiftExtraction.max_num_features", "8192"], timeout=1800)
+             "--ImageReader.single_camera", "1", "--SiftExtraction.use_gpu", "0", "--SiftExtraction.max_num_features", "8192"], timeout=1800)
 
         update(job_id, folder, writer, progress=38, stage="Matching overlapping frames",
                message="Matching visual features across nearby video frames.")
         run(["colmap", "sequential_matcher", "--database_path", str(database),
-             "--SequentialMatching.overlap", "10", "--SequentialMatching.loop_detection", "1"], timeout=1800)
+             "--SequentialMatching.overlap", "10", "--SequentialMatching.loop_detection", "1", "--SiftMatching.use_gpu", "0"], timeout=1800)
 
         update(job_id, folder, writer, progress=50, stage="Estimating camera poses (SfM)",
                message="Estimating camera positions and building the sparse point cloud.")
