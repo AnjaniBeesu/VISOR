@@ -7,8 +7,7 @@ button,input{font:inherit}
 #app{max-width:1600px;margin:0 auto;padding:0 6.2vw}
 .topbar{height:86px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
 .brand{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.18em}
-.brand-mark{width:27px;height:27px;border:1px solid #f4f4f4;display:grid;place-items:center;font-size:15px;letter-spacing:-.12em;font-weight:800}
-.brand-mark span{color:var(--navy)}
+.brand-logo{width:30px;height:30px;display:block;object-fit:contain;flex:none}
 .nav-links{display:flex;align-items:center;gap:42px;font:10px 'DM Mono',monospace;letter-spacing:.13em;color:#aaa}
 .nav-links a{transition:color .2s}.nav-links a:hover{color:#fff}
 .nav-cta{color:#fff!important;border:1px solid #424242;padding:11px 16px}.nav-cta span{color:#5278ff;margin-left:12px}
