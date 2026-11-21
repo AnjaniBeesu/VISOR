@@ -13,12 +13,12 @@ button,input{font:inherit}
 .nav-links a{transition:color .2s}.nav-links a:hover{color:#fff}
 .nav-cta{color:#fff!important;border:1px solid #424242;padding:11px 16px}.nav-cta span{color:#5278ff;margin-left:12px}
 .menu-button{display:none;background:none;border:0}
-.hero{padding-top:48px}
+.hero{padding-top:0}
 .hero-kicker,.eyebrow,.demo-note,.scene-topline,.slider-meta,.range-ticks,.stage-index,.stage-description button,.under-demo,.section-index,.steps article>span,footer>span{font:10px 'DM Mono',monospace;letter-spacing:.12em;color:#858585}
 .hero-kicker{display:flex;align-items:center;gap:10px}.live-dot,.scene-status i{width:6px;height:6px;border-radius:50%;background:var(--navy);display:inline-block;box-shadow:0 0 14px #0e3cbd}
-.hero-title-wrap{display:flex;align-items:flex-end;justify-content:space-between;padding:42px 0 74px}
-h1{font-size:clamp(62px,10vw,148px);line-height:.83;letter-spacing:-.085em;margin:0;font-weight:800}
-h1 span{color:#777}
+.hero-title-wrap{display:flex;align-items:center;justify-content:center;text-align:center;min-height:clamp(300px,39vw,510px);padding:0}
+h1{font-size:clamp(88px,17vw,230px);line-height:1;letter-spacing:-.095em;margin:0;font-weight:800;color:#f3f3f3}
+h1 span{color:var(--navy)}
 .hero-copy{font-size:13px;line-height:1.9;color:#969696;margin:0 2.5% 4px 0}
 .demo-heading{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
 .demo-heading h2{font-size:clamp(23px,3vw,36px);letter-spacing:-.055em;margin:10px 0 0;font-weight:600}
