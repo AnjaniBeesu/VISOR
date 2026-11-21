@@ -91,17 +91,52 @@
         <section class="process-section" id="process">
           <div class="section-index">02 / THE IDEA</div>
           <div class="process-grid">
-            <h2>Not just a<br>recording. A <span>place.</span></h2>
-            <div class="process-copy"><p>VISOR is an exploration into visual intelligence and spatial reconstruction. We are building a pipeline that turns ordinary video into a navigable digital representation of the real world.</p><a href="https://github.com/AnjaniBeesu/VISOR" target="_blank" rel="noreferrer">FOLLOW THE BUILD <span>↗</span></a></div>
+            <h2>From video<br>to <span>space.</span></h2>
+            <div class="process-copy"><p>VISOR explores spatial reconstruction: taking a video of a real-world environment and transforming it into a three-dimensional structure that can be explored interactively. Instead of simply watching a place, you can move through its digital representation and inspect it from different perspectives.</p><a href="https://github.com/AnjaniBeesu/VISOR" target="_blank" rel="noreferrer">FOLLOW THE BUILD <span>↗</span></a></div>
           </div>
           <div class="steps">
-            <article><span>01</span><div class="step-line"></div><h3>CAPTURE</h3><p>Start with an everyday video of a real environment.</p></article>
+            <article><span>01</span><div class="step-line"></div><h3>CAPTURE</h3><p>Start with a video of a real architectural environment.</p></article>
             <article><span>02</span><div class="step-line"></div><h3>RECONSTRUCT</h3><p>Extract visual features, depth and spatial structure.</p></article>
             <article><span>03</span><div class="step-line"></div><h3>EXPLORE</h3><p>Reveal an interactive 3D representation of the space.</p></article>
           </div>
         </section>
+
+        <section class="implementation-section" id="implementation">
+          <div class="section-index">03 / IMPLEMENTATION</div>
+          <div class="implementation-intro">
+            <h2>Frame by frame.<br><span>Space by space.</span></h2>
+            <p>A simple capture becomes the starting point for a structured reconstruction pipeline. Here's how VISOR is designed to work.</p>
+          </div>
+          <div class="implementation-steps">
+            <article class="implementation-card">
+              <span class="implementation-number">01 / INPUT</span>
+              <div class="implementation-icon">↗</div>
+              <h3>Record a space</h3>
+              <p>Capture an architectural environment in a steady video. Move slowly, keep the scene in focus and cover the space from multiple overlapping angles. Aim for at least 30 seconds of usable footage; clarity and coverage matter more than duration alone.</p>
+            </article>
+            <article class="implementation-card">
+              <span class="implementation-number">02 / UPLOAD</span>
+              <div class="implementation-icon">↑</div>
+              <h3>Upload your video</h3>
+              <p>Submit the footage to VISOR. The video becomes the source input for the reconstruction pipeline.</p>
+            </article>
+            <article class="implementation-card">
+              <span class="implementation-number">03 / EXTRACTION</span>
+              <div class="implementation-icon">▤</div>
+              <h3>Break it into frames</h3>
+              <p>The video is sampled into individual frames. These images provide overlapping visual information about the same environment from different moments and viewpoints.</p>
+            </article>
+            <article class="implementation-card">
+              <span class="implementation-number">04 / BUILD</span>
+              <div class="implementation-icon">◇</div>
+              <h3>Reconstruct the scene</h3>
+              <p>VISOR analyses the frames, estimates how the camera moved and progressively combines spatial information to build the 3D scene — piece by piece — ready for interactive exploration.</p>
+            </article>
+          </div>
+          <div class="implementation-outro"><span>FROM A MOVING CAMERA</span><b>TO AN EXPLORABLE WORLD.</b><span>VISOR / 001</span></div>
+        </section>
       </main>
-      <footer><a class="brand" href="#"><span class="brand-mark">V<span>/</span></span><span class="brand-name">VISOR</span></a><span>AN EXPERIMENT IN SPATIAL UNDERSTANDING.</span><span>© 2026 VISOR PROJECT</span></footer>
+      <footer><a class="brand" href="#"><img class="brand-logo" src="/visor-logo.svg" alt="" /><span class="brand-name">VISOR</span></a><span>AN EXPERIMENT IN SPATIAL UNDERSTANDING.</span><span>© 2026 VISOR PROJECT</span></footer>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
