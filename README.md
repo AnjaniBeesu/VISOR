@@ -16,13 +16,16 @@ The backend runs asynchronously. The browser polls the job API for real stage up
 
 ## Run the complete V1 locally
 
-Requirements: Docker Desktop with Docker Compose, and enough RAM/disk for COLMAP. Dense reconstruction is compute-intensive; 16 GB RAM is a practical starting point, not a hard minimum.
+Requirements: Docker Desktop with Docker Compose, and enough RAM/disk for COLMAP. The full dense MVS stage requires an NVIDIA CUDA-capable GPU passed through to Docker. Configure NVIDIA Container Toolkit / Docker Desktop GPU support and use the GPU compose override above. Without CUDA, video validation, frame extraction and CPU feature/SfM stages can run, but dense MVS will stop with an explicit error. 16 GB RAM is a practical starting point, not a hard minimum.
 
 ```bash
 git clone https://github.com/AnjaniBeesu/VISOR.git
 cd VISOR
 npm install
 docker compose up --build
+
+# For an NVIDIA GPU with Docker GPU passthrough configured:
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 ```
 
 In a second terminal:
@@ -41,7 +44,7 @@ npm run build
 
 ## Production deployment
 
-The Vercel deployment hosts the static frontend. COLMAP cannot run as a Vercel function: the reconstruction API must run on a Docker-capable service with persistent disk and sufficient CPU/RAM. A Render blueprint is included in `render.yaml`.
+The Vercel deployment hosts the static frontend. COLMAP cannot run as a Vercel function. The reconstruction API must run on a Docker-capable GPU host with persistent disk, CUDA support, and sufficient CPU/RAM. General CPU-only PaaS instances are not suitable for the full dense reconstruction stage.
 
 After deploying the API, set the Vercel environment variable:
 
@@ -74,7 +77,7 @@ Then redeploy the frontend. Configure API CORS to allow the Vercel domain. The i
 - Dynamic objects, reflective/transparent surfaces and low-texture walls can create holes or noisy geometry.
 - Poisson meshing creates a surface, but does not guarantee a complete, watertight architectural model.
 - V1 exports vertex-coloured GLB geometry; it does not yet produce photorealistic texture atlases or Gaussian splats.
-- The worker is single-process/single-job by default. Treat this as a test build, not a public multi-tenant service.
+- The worker is single-process/single-job by default. Dense MVS requires an NVIDIA CUDA runtime. Treat this as a test build, not a public multi-tenant service.
 
 ## Stack
 
