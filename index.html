@@ -30,7 +30,7 @@
             <h1>VISOR<span>.</span></h1>
           </div>
 
-          <div class="hero-action-wrap"><a class="hero-action" href="#experience">TRY VISOR NOW <span>↗</span></a></div>
+          <div class="hero-action-wrap"><a class="hero-action" href="#upload">TRY VISOR NOW <span>↗</span></a></div>
 
           <div class="demo-heading">
             <div><span class="eyebrow">01 / THE TRANSFORMATION</span><h2>One space. <em>Many dimensions.</em></h2></div>
@@ -86,6 +86,46 @@
             </div>
           </div>
           <div class="under-demo"><span>FIG 01. — FROM PIXELS TO SPATIAL STRUCTURE</span><span>MOVE THE SLIDER TO REVEAL THE PROCESS <b>↗</b></span></div>
+        </section>
+
+
+        <section class="upload-section" id="upload">
+          <div class="section-index">04 / RECONSTRUCTION STUDIO</div>
+          <div class="upload-intro">
+            <div><span class="eyebrow">YOUR FOOTAGE. YOUR SPACE.</span><h2>Bring a space<br>into <em>focus.</em></h2></div>
+            <p>Upload a steady walkthrough of an architectural environment. VISOR will extract frames, estimate camera motion, reconstruct dense geometry and prepare an interactive 3D model.</p>
+          </div>
+          <div class="upload-layout">
+            <div class="upload-card" id="dropZone">
+              <div class="upload-mark">↑</div>
+              <h3>Drop your video here</h3>
+              <p>or choose a file from your device</p>
+              <label class="upload-button" for="videoInput">SELECT VIDEO <span>↗</span></label>
+              <input id="videoInput" type="file" accept=".mp4,.mov,video/mp4,video/quicktime" />
+              <div class="upload-specs"><span>MP4 / MOV</span><span>30–120 SEC</span><span>MAX 250 MB</span><span>MIN 720P</span></div>
+              <p class="upload-hint">Walk slowly, keep the camera steady and capture overlapping views of the space. Avoid fast pans, blur and large moving objects.</p>
+            </div>
+            <div class="upload-side">
+              <div class="capture-check"><span>01</span><div><b>Capture coverage</b><small>Move through the space and show each area from multiple angles.</small></div></div>
+              <div class="capture-check"><span>02</span><div><b>Keep it sharp</b><small>Good lighting and low motion blur improve feature matching.</small></div></div>
+              <div class="capture-check"><span>03</span><div><b>Let VISOR reconstruct</b><small>Processing time depends on video length and available compute.</small></div></div>
+              <div class="privacy-note">LOCAL TEST MODE · UPLOADED FILES ARE STORED BY THE RECONSTRUCTION API.</div>
+            </div>
+          </div>
+          <div class="job-panel" id="jobPanel" hidden>
+            <div class="job-heading"><div><span class="eyebrow">RECONSTRUCTION JOB</span><h3 id="jobTitle">Processing your environment</h3></div><span class="job-state" id="jobState">QUEUED</span></div>
+            <div class="job-progress"><div id="jobProgressFill"></div></div>
+            <div class="job-meta"><span id="jobStage">Waiting for worker</span><b id="jobPercent">0%</b></div>
+            <p class="job-message" id="jobMessage">Your video has been accepted.</p>
+            <div class="frame-results" id="frameResults"></div>
+            <div class="job-error" id="jobError" hidden></div>
+            <div class="model-result" id="modelResult" hidden>
+              <div class="model-result-head"><span>RECONSTRUCTION / GLB</span><a id="downloadModel" href="#" download="visor-reconstruction.glb">DOWNLOAD MODEL ↗</a></div>
+              <div class="model-viewer" id="modelViewer"><div class="viewer-placeholder">YOUR RECONSTRUCTION WILL APPEAR HERE</div></div>
+              <div class="model-stats" id="modelStats"></div>
+            </div>
+            <button class="new-job-button" id="newJobButton" type="button">START ANOTHER RECONSTRUCTION ↺</button>
+          </div>
         </section>
 
         <section class="process-section" id="process">
