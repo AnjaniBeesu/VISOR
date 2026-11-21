@@ -6,7 +6,7 @@ services:
       - "8000:8000"
     environment:
       VISOR_DATA_DIR: /data/jobs
-      VISOR_WORKERS: 1
+      VISOR_WORKERS: 1\n      OMP_NUM_THREADS: 4
       VISOR_CORS_ORIGINS: "*"
     volumes:
       - visor-data:/data/jobs
