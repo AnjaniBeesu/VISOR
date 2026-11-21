@@ -1,4 +1,4 @@
-import './style.css';
+import './style.css';\nimport * as THREE from 'three';\nimport { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';\nimport { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const slider = document.querySelector('#progressSlider');
 const scene = document.querySelector('#scene');
@@ -70,3 +70,200 @@ document.querySelector('.menu-button').addEventListener('click',()=>{
 });
 
 render(0);
+
+// VISOR reconstruction studio — real backend integration.
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const videoInput = document.querySelector('#videoInput');
+const dropZone = document.querySelector('#dropZone');
+const jobPanel = document.querySelector('#jobPanel');
+const uploadButton = document.querySelector('.upload-button');
+let activeJob = null;
+let pollTimer = null;
+let viewerCleanup = null;
+
+function showUploadError(message) {
+  jobPanel.hidden = false;
+  document.querySelector('#jobTitle').textContent = 'Check your video';
+  document.querySelector('#jobState').textContent = 'NEEDS ATTENTION';
+  document.querySelector('#jobStage').textContent = 'Upload validation';
+  document.querySelector('#jobMessage').textContent = message;
+  document.querySelector('#jobError').hidden = true;
+  document.querySelector('#jobProgressFill').style.width = '0%';
+}
+
+function validateClientFile(file) {
+  if (!file) return 'Choose a video first.';
+  const ext = file.name.toLowerCase().split('.').pop();
+  if (!['mp4', 'mov'].includes(ext)) return 'Only MP4 and MOV videos are supported.';
+  if (file.size > 250 * 1024 * 1024) return 'The maximum file size is 250 MB.';
+  if (file.size === 0) return 'The selected file is empty.';
+  return null;
+}
+
+async function uploadVideo(file) {
+  const problem = validateClientFile(file);
+  if (problem) { showUploadError(problem); return; }
+  jobPanel.hidden = false;
+  jobPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('#jobTitle').textContent = file.name;
+  document.querySelector('#jobState').textContent = 'UPLOADING';
+  document.querySelector('#jobStage').textContent = 'Uploading source footage';
+  document.querySelector('#jobMessage').textContent = 'Sending your video to the VISOR reconstruction API…';
+  document.querySelector('#jobProgressFill').style.width = '3%';
+  document.querySelector('#jobPercent').textContent = '—';
+  document.querySelector('#jobError').hidden = true;
+  document.querySelector('#frameResults').innerHTML = '';
+  document.querySelector('#modelResult').hidden = true;
+  const body = new FormData();
+  body.append('video', file);
+  try {
+    const response = await fetch(API_BASE + '/api/jobs', { method: 'POST', body });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.detail || 'Upload failed.');
+    activeJob = payload.job_id;
+    await pollJob();
+    clearInterval(pollTimer);
+    pollTimer = setInterval(pollJob, 3000);
+  } catch (error) {
+    showUploadError(error.message.includes('Failed to fetch')
+      ? 'Cannot reach the VISOR API. Start the backend with Docker Compose, or configure VITE_API_BASE_URL to point to your deployed API.'
+      : error.message);
+  }
+}
+
+async function pollJob() {
+  if (!activeJob) return;
+  try {
+    const response = await fetch(API_BASE + '/api/jobs/' + activeJob);
+    const job = await response.json();
+    if (!response.ok) throw new Error(job.detail || 'Could not read job status.');
+    document.querySelector('#jobTitle').textContent = job.status === 'completed' ? 'Your space is ready' : 'Reconstructing your environment';
+    document.querySelector('#jobState').textContent = job.status.toUpperCase();
+    document.querySelector('#jobStage').textContent = job.stage || 'Processing';
+    document.querySelector('#jobMessage').textContent = job.message || '';
+    document.querySelector('#jobProgressFill').style.width = (job.progress || 0) + '%';
+    document.querySelector('#jobPercent').textContent = (job.progress || 0) + '%';
+    if (job.frames?.length) renderFrameGallery(job);
+    if (job.status === 'completed') {
+      clearInterval(pollTimer);
+      await showModel(job);
+    } else if (job.status === 'failed') {
+      clearInterval(pollTimer);
+      const error = document.querySelector('#jobError');
+      error.hidden = false;
+      error.textContent = job.error || 'Reconstruction failed. Try a video with clearer overlapping views.';
+    }
+  } catch (error) {
+    document.querySelector('#jobMessage').textContent = 'Connection interrupted. VISOR will retry automatically.';
+  }
+}
+
+function renderFrameGallery(job) {
+  const container = document.querySelector('#frameResults');
+  if (container.dataset.job === job.job_id) return;
+  container.dataset.job = job.job_id;
+  const title = document.createElement('div');
+  title.className = 'frames-title';
+  title.textContent = 'EXTRACTED KEYFRAMES · ' + job.frames.length + ' USABLE FRAMES';
+  container.append(title);
+  job.frames.slice(0, 8).forEach((name, index) => {
+    const image = document.createElement('img');
+    image.loading = 'lazy';
+    image.alt = 'Extracted video frame ' + (index + 1);
+    image.src = API_BASE + '/api/jobs/' + job.job_id + '/frames/' + encodeURIComponent(name);
+    container.append(image);
+  });
+}
+
+async function showModel(job) {
+  const panel = document.querySelector('#modelResult');
+  panel.hidden = false;
+  const modelUrl = API_BASE + '/api/jobs/' + job.job_id + '/model';
+  document.querySelector('#downloadModel').href = modelUrl;
+  const stats = job.artifacts?.stats || {};
+  document.querySelector('#modelStats').textContent =
+    (stats.vertices ?? '—') + ' VERTICES  /  ' + (stats.triangles ?? '—') + ' TRIANGLES  /  ' + (stats.points ?? '—') + ' POINTS';
+  await mountModelViewer(modelUrl);
+}
+
+async function mountModelViewer(url) {
+  const host = document.querySelector('#modelViewer');
+  if (viewerCleanup) viewerCleanup();
+  host.innerHTML = '';
+  const scene3D = new THREE.Scene();
+  scene3D.background = new THREE.Color(0x080a10);
+  const camera = new THREE.PerspectiveCamera(45, host.clientWidth / 420, 0.01, 10000);
+  camera.position.set(3, 2.4, 4);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(host.clientWidth, 420);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  host.append(renderer.domElement);
+  scene3D.add(new THREE.HemisphereLight(0xc9d8ff, 0x252b3b, 2.1));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(4, 7, 5);
+  scene3D.add(key);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  const loader = new GLTFLoader();
+  loader.load(url, gltf => {
+    const object = gltf.scene;
+    const box = new THREE.Box3().setFromObject(object);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    object.position.sub(center);
+    scene3D.add(object);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    camera.position.set(maxDim * 1.7, maxDim * 1.25, maxDim * 1.7);
+    camera.near = maxDim / 1000;
+    camera.far = maxDim * 100;
+    camera.updateProjectionMatrix();
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }, undefined, error => {
+    host.innerHTML = '<div class="viewer-placeholder">MODEL COULD NOT BE LOADED. DOWNLOAD THE GLB TO INSPECT IT.</div>';
+    console.error(error);
+  });
+  let frame;
+  const animate = () => { frame = requestAnimationFrame(animate); controls.update(); renderer.render(scene3D, camera); };
+  animate();
+  const resize = () => {
+    const width = host.clientWidth;
+    camera.aspect = width / 420;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, 420);
+  };
+  window.addEventListener('resize', resize);
+  viewerCleanup = () => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener('resize', resize);
+    controls.dispose();
+    renderer.dispose();
+    renderer.domElement.remove();
+  };
+}
+
+uploadButton.addEventListener('click', event => {
+  if (!videoInput.files?.length) return;
+});
+videoInput.addEventListener('change', () => { if (videoInput.files?.[0]) uploadVideo(videoInput.files[0]); });
+dropZone.addEventListener('dragover', event => { event.preventDefault(); dropZone.classList.add('dragging'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+dropZone.addEventListener('drop', event => {
+  event.preventDefault();
+  dropZone.classList.remove('dragging');
+  const file = event.dataTransfer.files?.[0];
+  if (file) uploadVideo(file);
+});
+document.querySelector('#newJobButton').addEventListener('click', () => {
+  clearInterval(pollTimer);
+  activeJob = null;
+  videoInput.value = '';
+  document.querySelector('#frameResults').innerHTML = '';
+  document.querySelector('#frameResults').dataset.job = '';
+  document.querySelector('#modelResult').hidden = true;
+  jobPanel.hidden = true;
+  document.querySelector('#upload').scrollIntoView({ behavior: 'smooth' });
+  if (viewerCleanup) viewerCleanup();
+});
